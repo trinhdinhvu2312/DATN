@@ -1,11 +1,11 @@
+import Board from "./pages/Boards/_id";
+
 function App() {
   return (
     <>
-      <p className="read-the-docs">
-        Hello Word
-      </p>
+      <Board />
     </>
-  )
+  );
 }
 
-export default App
+export default App;
