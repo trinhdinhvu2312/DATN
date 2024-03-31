@@ -22,7 +22,6 @@ const START_SERVER = () => {
   // Middleware xử lý lỗi tập trung
   app.use(errorHandlingMiddleware);
 
-  // Môi trường Production (cụ thể hiện tại là đang support Render.com)
   if (env.BUILD_MODE === "production") {
     app.listen(process.env.PORT, () => {
       console.log(

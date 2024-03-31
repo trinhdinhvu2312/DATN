@@ -30,7 +30,6 @@ export const CLOSE_DB = async () => {
 };
 
 // Function GET_DB (không async) này có nhiệm vụ export ra cái Trello Database Instance sau khi đã connect thành công tới MongoDB để chúng ta sử dụng ở nhiều nơi khác nhau trong code.
-// Lưu ý phải đảm bảo chỉ luôn gọi cái GET_DB này sau khi đã kết nối thành công tới MongoDB
 export const GET_DB = () => {
   if (!trelloDatabaseInstance)
     throw new Error("Must connect to Database first!");
