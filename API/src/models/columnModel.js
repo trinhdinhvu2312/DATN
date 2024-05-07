@@ -34,7 +34,6 @@ const validateBeforeCreate = async (data) => {
 const createNew = async (data) => {
   try {
     const validData = await validateBeforeCreate(data);
-    // Biến đổi một số dữ liệu liên quan tới ObjectId chuẩn chỉnh
     const newColumnToAdd = {
       ...validData,
       boardId: new ObjectId(validData.boardId),

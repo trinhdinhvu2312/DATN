@@ -17,10 +17,8 @@ const createNew = async (reqBody) => {
     // Gọi tới tầng Model để xử lý lưu bản ghi newBoard vào trong Database
     const createdBoard = await boardModel.createNew(newBoard);
 
-    // Lấy bản ghi board sau khi gọi (tùy mục đích dự án mà có cần bước này hay không)
+    // Lấy bản ghi board sau khi gọi
     const getNewBoard = await boardModel.findOneById(createdBoard.insertedId);
-
-    // Bắn email, notification về cho admin khi có 1 cái board mới được tạo...vv
 
     // Trả kết quả về, trong Service luôn phải có return
     return getNewBoard;
@@ -37,15 +35,12 @@ const getDetails = async (boardId) => {
     }
     const resBoard = cloneDeep(board);
 
-    // B2: Đưa card về đúng column của nó
     resBoard.columns.forEach((column) => {
-      // Cách dùng .equals này là bởi vì chúng ta hiểu ObjectId trong MongoDB có support method .equals
       column.cards = resBoard.cards.filter((card) =>
         card.columnId.equals(column._id)
       );
     });
 
-    // B3: Xóa mảng cards khỏi board ban đầu
     delete resBoard.cards;
 
     return resBoard;

@@ -9,5 +9,8 @@ export const env = {
 
   BUILD_MODE: process.env.BUILD_MODE,
 
+  JWT_SECRET: process.env.JWT_SECRET,
+  TOKEN_EXPIRE_TIME: process.env.TOKEN_EXPIRE_TIME,
+
   AUTHOR: process.env.AUTHOR,
 };
