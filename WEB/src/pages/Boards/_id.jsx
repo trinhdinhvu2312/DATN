@@ -5,14 +5,10 @@ import BoardBar from "./BoardBar/BoardBar";
 import BoardContent from "./BoardContent/BoardContent";
 import { mapOrder } from "~/utils/sorts";
 
-// import { mockData } from '~/apis/mock-data'
 import {
-  fetchBoardDetailsAPI,
   createNewColumnAPI,
   createNewCardAPI,
-  updateBoardDetailsAPI,
   updateColumnDetailsAPI,
-  moveCardToDifferentColumnAPI,
   deleteColumnDetailsAPI,
 } from "~/apis";
 import { generatePlaceholderCard } from "~/utils/formatters";
@@ -21,14 +17,15 @@ import Box from "@mui/material/Box";
 import CircularProgress from "@mui/material/CircularProgress";
 import Typography from "@mui/material/Typography";
 import { toast } from "react-toastify";
+import BoardServices from "~/apis/BoardServices";
 
 function Board() {
   const [board, setBoard] = useState(null);
 
   useEffect(() => {
-    const boardId = "66048a9fdf376ca8c949055c";
+    const boardId = "6609d958a69b6318e1e30703";
     // Call API
-    fetchBoardDetailsAPI(boardId).then((board) => {
+    BoardServices.fetchBoardDetailsAPI(boardId).then((board) => {
       // Sắp xếp thứ tự các column luôn ở đây trước khi đưa dữ liệu xuống bên dưới các component con
       board.columns = mapOrder(board.columns, board.columnOrderIds, "_id");
 
@@ -97,7 +94,7 @@ function Board() {
     setBoard(newBoard);
 
     // Gọi API update Board
-    updateBoardDetailsAPI(newBoard._id, {
+    BoardServices.updateBoardDetailsAPI(newBoard._id, {
       columnOrderIds: dndOrderedColumnsIds,
     });
   };
@@ -141,7 +138,7 @@ function Board() {
     // Xử lý vấn đề khi kéo Card cuối cùng ra khỏi Column, Column rỗng sẽ có placeholder card, cần xóa nó đi trước khi gửi dữ liệu lên cho phía BE.
     if (prevCardOrderIds[0].includes("placeholder-card")) prevCardOrderIds = [];
 
-    moveCardToDifferentColumnAPI({
+    BoardServices.moveCardToDifferentColumnAPI({
       currentCardId,
       prevColumnId,
       prevCardOrderIds,
