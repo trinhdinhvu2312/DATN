@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { md } from "~/utils/breakpoints";
 
@@ -124,7 +125,7 @@ export const Text = styled.p`
   line-height: 1rem;
   color: #5e6c84;
 `;
-export const Link = styled.a`
+export const StyledLink = styled(Link)`
   text-decoration: none;
   color: #0052cc;
   cursor: pointer;

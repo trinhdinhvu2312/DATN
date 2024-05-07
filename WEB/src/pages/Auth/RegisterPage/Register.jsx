@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import {
   Container,
   TrelloIconContainer,
@@ -10,9 +11,10 @@ import {
   Text,
   Icon,
   Hr,
-  Link,
+  StyledLink,
 } from "./Styled";
 import { useEffect } from "react";
+import { TextField } from "@mui/material";
 
 const Register = () => {
   useEffect(() => {
@@ -27,17 +29,46 @@ const Register = () => {
     <>
       <Container>
         <TrelloIconContainer>
-          <Icon src="https://d2k1ftgv7pobq7.cloudfront.net/meta/c/p/res/images/trello-header-logos/167dc7b9900a5b241b15ba21f8037cf8/trello-logo-blue.svg" />
+          <Link to="/">
+            <Icon src="https://d2k1ftgv7pobq7.cloudfront.net/meta/c/p/res/images/trello-header-logos/167dc7b9900a5b241b15ba21f8037cf8/trello-logo-blue.svg" />
+          </Link>
         </TrelloIconContainer>
         <FormSection>
           <FormCard>
             <Form onSubmit={(e) => handleSubmit(e)}>
               <Title>Sign up for your account</Title>
-              <Input type="text" placeholder="Enter name" required />
-              <Input type="text" placeholder="Enter surname" required />
-              <Input type="email" placeholder="Enter email" required />
-              <Input type="password" placeholder="Enter password" required />
-              <Input type="password" placeholder="Confirm password" required />
+              <TextField
+                type="text"
+                label="Username"
+                placeholder="Enter username"
+                variant="outlined"
+                sx={{ width: "100%" }}
+                required
+              />
+              <TextField
+                type="email"
+                label="Email"
+                placeholder="Enter email"
+                variant="outlined"
+                sx={{ width: "100%" }}
+                required
+              />
+              <TextField
+                type="password"
+                label="Password"
+                placeholder="Enter password"
+                variant="outlined"
+                sx={{ width: "100%" }}
+                required
+              />
+              <TextField
+                type="password"
+                label="Confirm Password"
+                placeholder="Confirm password"
+                variant="outlined"
+                sx={{ width: "100%" }}
+                required
+              />
               <Text>
                 By signing up, you confirm that you have read and accepted our{" "}
                 <Link fontSize="0.75rem">Terms of Service</Link> and{" "}
@@ -45,9 +76,9 @@ const Register = () => {
               </Text>
               <Button type="submit">Complete</Button>
               <Hr />
-              <Link fontSize="0.85rem" onClick={() => history.push("/login")}>
+              <StyledLink fontSize="0.85rem" to="/login">
                 Already have an account? Log In
-              </Link>
+              </StyledLink>
             </Form>
           </FormCard>
         </FormSection>

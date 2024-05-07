@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { md } from "~/utils/breakpoints";
+import { Link } from "react-router-dom";
 
 export const BgContainer = styled.div`
   display: initial;
@@ -76,33 +77,7 @@ export const Title = styled.h1`
   font-size: 1rem;
   padding: 1rem;
 `;
-export const Input = styled.input`
-  width: 100%;
-  outline: none;
-  font-size: 0.85rem;
-  border-radius: 0.2rem;
-  padding: 0.6rem;
-  border: 2px solid #dfe1e6;
-  background-color: #fafbfc;
-  &:focus {
-    transition: background-color 0.2s ease-in-out 0s,
-      border-color 0.2s ease-in-out 0s;
-    border: 2px solid #68bcff;
-  }
-`;
-export const Button = styled.button`
-  background-color: #5aac44;
-  width: 100%;
-  border-radius: 0.4rem;
-  padding: 0.5rem 1rem;
-  color: white;
-  border: none;
-  cursor: pointer;
-  font-weight: bold;
-  &:hover {
-    background: linear-gradient(to bottom, #61bd4f 0%, #5aac44 100%);
-  }
-`;
+
 export const Hr = styled.hr`
   width: 100%;
   display: block;
@@ -113,7 +88,7 @@ export const Hr = styled.hr`
   padding: 0;
 `;
 
-export const Link = styled.a`
+export const StyledLink = styled(Link)`
   text-decoration: none;
   color: #0052cc;
   cursor: pointer;
