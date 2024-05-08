@@ -5,12 +5,6 @@ import BoardBar from "./BoardBar/BoardBar";
 import BoardContent from "./BoardContent/BoardContent";
 import { mapOrder } from "~/utils/sorts";
 
-import {
-  createNewColumnAPI,
-  createNewCardAPI,
-  updateColumnDetailsAPI,
-  deleteColumnDetailsAPI,
-} from "~/apis";
 import { generatePlaceholderCard } from "~/utils/formatters";
 import { isEmpty } from "lodash";
 import Box from "@mui/material/Box";
@@ -18,6 +12,8 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Typography from "@mui/material/Typography";
 import { toast } from "react-toastify";
 import BoardServices from "~/apis/BoardServices";
+import ColumnServices from "~/apis/ColumnServices";
+import CardServices from "~/apis/CardServices";
 
 function Board() {
   const [board, setBoard] = useState(null);
@@ -45,7 +41,7 @@ function Board() {
 
   // Func này có nhiệm vụ gọi API tạo mới Column và làm lại dữ liệu State Board
   const createNewColumn = async (newColumnData) => {
-    const createdColumn = await createNewColumnAPI({
+    const createdColumn = await ColumnServices.createNewColumnAPI({
       ...newColumnData,
       boardId: board._id,
     });
@@ -62,7 +58,7 @@ function Board() {
 
   // Func này có nhiệm vụ gọi API tạo mới Card và làm lại dữ liệu State Board
   const createNewCard = async (newCardData) => {
-    const createdCard = await createNewCardAPI({
+    const createdCard = await CardServices.createNewCardAPI({
       ...newCardData,
       boardId: board._id,
     });
@@ -115,7 +111,9 @@ function Board() {
     setBoard(newBoard);
 
     // Gọi API update Column
-    updateColumnDetailsAPI(columnId, { cardOrderIds: dndOrderedCardIds });
+    ColumnServices.updateColumnDetailsAPI(columnId, {
+      cardOrderIds: dndOrderedCardIds,
+    });
   };
 
   const moveCardToDifferentColumn = (
@@ -159,7 +157,7 @@ function Board() {
     setBoard(newBoard);
 
     // Gọi API xử lý phía BE
-    deleteColumnDetailsAPI(columnId).then((res) => {
+    ColumnServices.deleteColumnDetailsAPI(columnId).then((res) => {
       toast.success(res?.deleteResult);
     });
   };

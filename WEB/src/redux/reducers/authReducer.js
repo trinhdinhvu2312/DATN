@@ -1,4 +1,4 @@
-import { getLocalStorage } from "../../services/agent";
+import { getLocalStorage } from "~/apis/agent";
 import { LOGOUT, LOGIN_SUCCESS, LOGIN_FAILURE } from "../actions/actionTypes";
 
 const accessToken =

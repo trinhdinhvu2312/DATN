@@ -1,25 +1,36 @@
-import React from 'react'
-import Box from '@mui/material/Box'
-import Menu from '@mui/material/Menu'
-import MenuItem from '@mui/material/MenuItem'
-import Divider from '@mui/material/Divider'
-import ListItemIcon from '@mui/material/ListItemIcon'
-import Avatar from '@mui/material/Avatar'
-import Tooltip from '@mui/material/Tooltip'
-import IconButton from '@mui/material/IconButton'
-import PersonAdd from '@mui/icons-material/PersonAdd'
-import Settings from '@mui/icons-material/Settings'
-import Logout from '@mui/icons-material/Logout'
+import React from "react";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import Box from "@mui/material/Box";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import Divider from "@mui/material/Divider";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import Avatar from "@mui/material/Avatar";
+import Tooltip from "@mui/material/Tooltip";
+import IconButton from "@mui/material/IconButton";
+import PersonAdd from "@mui/icons-material/PersonAdd";
+import Settings from "@mui/icons-material/Settings";
+import Logout from "@mui/icons-material/Logout";
+import { logout } from "~/redux/actions/authActions";
+import { clearLocalStorage } from "~/apis/agent";
 
 function Profiles() {
-  const [anchorEl, setAnchorEl] = React.useState(null)
-  const open = Boolean(anchorEl)
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
   const handleClick = (event) => {
-    setAnchorEl(event.currentTarget)
-  }
+    setAnchorEl(event.currentTarget);
+  };
   const handleClose = () => {
-    setAnchorEl(null)
-  }
+    setAnchorEl(null);
+  };
+
+  const handleLogout = () => {
+    clearLocalStorage();
+    dispatch(logout(navigate));
+  };
 
   return (
     <Box>
@@ -28,9 +39,9 @@ function Profiles() {
           onClick={handleClick}
           size="small"
           sx={{ padding: 0 }}
-          aria-controls={open ? 'basic-menu-profiles' : undefined}
+          aria-controls={open ? "basic-menu-profiles" : undefined}
           aria-haspopup="true"
-          aria-expanded={open ? 'true' : undefined}
+          aria-expanded={open ? "true" : undefined}
         >
           <Avatar
             sx={{ width: 36, height: 36 }}
@@ -45,7 +56,7 @@ function Profiles() {
         open={open}
         onClose={handleClose}
         MenuListProps={{
-          'aria-labelledby': 'basic-button-profiles'
+          "aria-labelledby": "basic-button-profiles",
         }}
       >
         <MenuItem>
@@ -67,7 +78,7 @@ function Profiles() {
           </ListItemIcon>
           Settings
         </MenuItem>
-        <MenuItem>
+        <MenuItem onClick={handleLogout}>
           <ListItemIcon>
             <Logout fontSize="small" />
           </ListItemIcon>
@@ -75,7 +86,7 @@ function Profiles() {
         </MenuItem>
       </Menu>
     </Box>
-  )
+  );
 }
 
-export default Profiles
+export default Profiles;

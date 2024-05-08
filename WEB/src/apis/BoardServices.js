@@ -3,7 +3,7 @@ import { getApi, putApi } from "./agent";
 const BoardServices = {
   fetchBoardDetailsAPI: async (boardId) => {
     try {
-      const result = await getApi(`/v1/boards/${boardId}`, "");
+      const result = await getApi(`boards/${boardId}`, "");
       return result.data;
     } catch (error) {
       console.log(error);
@@ -13,7 +13,7 @@ const BoardServices = {
 
   updateBoardDetailsAPI: async (boardId, updateData) => {
     try {
-      const result = await putApi(`/v1/boards/${boardId}`, updateData);
+      const result = await putApi(`boards/${boardId}`, updateData);
       return result.data;
     } catch (error) {
       console.log(error);
@@ -23,10 +23,7 @@ const BoardServices = {
 
   moveCardToDifferentColumnAPI: async (updateData) => {
     try {
-      const result = await putApi(
-        `/v1/boards/supports/moving_card`,
-        updateData
-      );
+      const result = await putApi(`boards/supports/moving_card`, updateData);
       return result.data;
     } catch (error) {
       console.log(error);
