@@ -1,33 +1,38 @@
-import { combineReducers } from 'redux';
-import createWebStorage from 'redux-persist/lib/storage/createWebStorage';
+import { combineReducers } from "redux";
+import createWebStorage from "redux-persist/lib/storage/createWebStorage";
 
-import authReducer from './authReducer';
-import messageReducer from './messageReducer';
+import authReducer from "./authReducer";
+import messageReducer from "./messageReducer";
+import boardReducer from "./boardReducer";
 
 const createNoopStorage = () => ({
   getItem() {
-      return Promise.resolve(null);
+    return Promise.resolve(null);
   },
   setItem(_key, value) {
-      return Promise.resolve(value);
+    return Promise.resolve(value);
   },
   removeItem() {
-      return Promise.resolve();
+    return Promise.resolve();
   },
 });
 
-const storage = typeof window !== 'undefined' ? createWebStorage('local') : createNoopStorage();
+const storage =
+  typeof window !== "undefined"
+    ? createWebStorage("local")
+    : createNoopStorage();
 
 const rootPersistConfig = {
-  key: 'root',
+  key: "root",
   storage,
-  keyPrefix: 'redux-',
+  keyPrefix: "redux-",
   whitelist: [],
 };
 
 const rootReducer = combineReducers({
   auth: authReducer,
   message: messageReducer,
+  board: boardReducer,
 });
 
 export { rootReducer, rootPersistConfig };

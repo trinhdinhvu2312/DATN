@@ -9,9 +9,9 @@ import {
 } from "./actionTypes";
 import { toast } from "react-toastify";
 
-export const loginSuccess = (accessToken) => ({
+export const loginSuccess = (user) => ({
   type: LOGIN_SUCCESS,
-  payload: { accessToken },
+  payload: user,
 });
 
 export const loginFailure = (error) => ({
@@ -39,10 +39,10 @@ export const login = (credentials, navigate) => async (dispatch) => {
     if (response.status === 200) {
       toast.success(response.data.message);
       const accessToken = response.data.user.verifyToken;
-
+      const user = response.data.user;
       if (accessToken) {
         setLocalStorage("accessToken", accessToken);
-        dispatch(loginSuccess(accessToken));
+        dispatch(loginSuccess(user));
         navigate("/board");
       } else {
         navigate("/");

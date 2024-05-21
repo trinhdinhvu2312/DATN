@@ -1,6 +1,16 @@
-import { getApi, putApi } from "./agent";
+import { getApi, postApi, putApi2 } from "./agent";
 
 const BoardServices = {
+  createBoard: async (payload) => {
+    try {
+      const result = await postApi("boards", payload);
+      return result;
+    } catch (error) {
+      console.log(error);
+    }
+    return null;
+  },
+
   fetchBoardDetailsAPI: async (boardId) => {
     try {
       const result = await getApi(`boards/${boardId}`, "");
@@ -13,7 +23,7 @@ const BoardServices = {
 
   updateBoardDetailsAPI: async (boardId, updateData) => {
     try {
-      const result = await putApi(`boards/${boardId}`, updateData);
+      const result = await putApi2(`boards/${boardId}`, updateData);
       return result.data;
     } catch (error) {
       console.log(error);
@@ -23,7 +33,7 @@ const BoardServices = {
 
   moveCardToDifferentColumnAPI: async (updateData) => {
     try {
-      const result = await putApi(`boards/supports/moving_card`, updateData);
+      const result = await putApi2(`boards/supports/moving_card`, updateData);
       return result.data;
     } catch (error) {
       console.log(error);

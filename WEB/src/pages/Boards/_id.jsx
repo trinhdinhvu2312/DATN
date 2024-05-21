@@ -19,18 +19,20 @@ function Board() {
   const [board, setBoard] = useState(null);
 
   useEffect(() => {
-    const boardId = "6609d958a69b6318e1e30703";
+    // Tạm thời fix cứng boardId, flow chuẩn chỉnh về sau khi học nâng cao trực tiếp với mình là chúng ta sẽ sử dụng react-router-dom để lấy chuẩn boardId từ URL về.
+    const boardId = "664c8cb414e83c066bbb8dd7";
     // Call API
     BoardServices.fetchBoardDetailsAPI(boardId).then((board) => {
-      // Sắp xếp thứ tự các column luôn ở đây trước khi đưa dữ liệu xuống bên dưới các component con
+      // Sắp xếp thứ tự các column luôn ở đây trước khi đưa dữ liệu xuống bên dưới các component con (video 71 đã giải thích lý do ở phần Fix bug quan trọng)
       board.columns = mapOrder(board.columns, board.columnOrderIds, "_id");
 
       board.columns.forEach((column) => {
+        // Khi f5 trang web thì cần xử lý vấn đề kéo thả vào một column rỗng (Nhớ lại video 37.2, code hiện tại là video 69)
         if (isEmpty(column.cards)) {
           column.cards = [generatePlaceholderCard(column)];
           column.cardOrderIds = [generatePlaceholderCard(column)._id];
         } else {
-          // Sắp xếp thứ tự các cards luôn ở đây trước khi đưa dữ liệu xuống bên dưới các component con
+          // Sắp xếp thứ tự các cards luôn ở đây trước khi đưa dữ liệu xuống bên dưới các component con (video 71 đã giải thích lý do ở phần Fix bug quan trọng)
           column.cards = mapOrder(column.cards, column.cardOrderIds, "_id");
         }
       });
@@ -94,6 +96,7 @@ function Board() {
       columnOrderIds: dndOrderedColumnsIds,
     });
   };
+
   const moveCardInTheSameColumn = (
     dndOrderedCards,
     dndOrderedCardIds,

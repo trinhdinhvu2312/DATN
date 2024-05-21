@@ -7,8 +7,8 @@ const accessToken =
     : null;
 
 const initialState = accessToken
-  ? { isLoggedIn: true, accessToken }
-  : { isLoggedIn: false, accessToken: null };
+  ? { isLoggedIn: true, user: null }
+  : { isLoggedIn: false, user: null };
 
 const authReducer = (state = initialState, action) => {
   const { type, payload } = action;
@@ -18,19 +18,19 @@ const authReducer = (state = initialState, action) => {
       return {
         ...state,
         isLoggedIn: true,
-        accessToken: payload.accessToken,
+        user: payload,
       };
     case LOGIN_FAILURE:
       return {
         ...state,
         isLoggedIn: false,
-        accessToken: null,
+        user: null,
       };
     case LOGOUT:
       return {
         ...state,
         isLoggedIn: false,
-        accessToken: null,
+        user: null,
       };
     default:
       return state;
