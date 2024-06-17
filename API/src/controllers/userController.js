@@ -46,15 +46,10 @@ const login = async (req, res, next) => {
         .send({ errMessage: "Your email/password is wrong!" });
     }
 
-    if (!result.verifyToken) {
-      // Nếu chưa có, thì tạo mới verifyToken và cập nhật
-      const verifyToken = auth.generateToken(
-        result._id.toString(),
-        result.email
-      );
-      result.verifyToken = verifyToken;
-      await userService.updateVerifyToken(result._id, verifyToken);
-    }
+    // Nếu chưa có, thì tạo mới verifyToken và cập nhật
+    const verifyToken = auth.generateToken(result._id.toString(), result.email);
+    result.verifyToken = verifyToken;
+    await userService.updateVerifyToken(result._id, verifyToken);
 
     // Xóa password trước khi gửi response
     delete result.password;
@@ -69,7 +64,7 @@ const login = async (req, res, next) => {
 
 const getUser = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user._id;
     const result = await userService.getUser(userId);
     if (!result) {
       return res
@@ -80,6 +75,30 @@ const getUser = async (req, res) => {
     result.password = undefined;
 
     return res.status(StatusCodes.OK).send(result);
+  } catch (error) {
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .send({ errMessage: error.message });
+  }
+};
+
+const getUserById = async (req, res) => {
+  try {
+    const userId = req.params.id;
+
+    const result = await userService.getUser(userId);
+    if (!result) {
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .send({ errMessage: "User not found!" });
+    }
+
+    const dataTransferObject = {
+      username: result.username,
+      email: result.email,
+    };
+
+    return res.status(StatusCodes.OK).send(dataTransferObject);
   } catch (error) {
     return res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
@@ -115,4 +134,5 @@ export const userController = {
   login,
   getUser,
   getUserWithMail,
+  getUserById,
 };

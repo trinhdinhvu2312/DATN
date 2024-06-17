@@ -18,8 +18,6 @@ const USER_COLLECTION_SCHEMA = Joi.object({
   updatedAt: Joi.date().timestamp("javascript").default(null),
 });
 
-const INVALID_UPDATE_FIELDS = ["_id", "createdAt"];
-
 const validateBeforeCreate = async (data) => {
   return await USER_COLLECTION_SCHEMA.validateAsync(data, {
     abortEarly: false,
@@ -29,9 +27,25 @@ const validateBeforeCreate = async (data) => {
 const register = async (data) => {
   try {
     const validData = await validateBeforeCreate(data);
+
+    const existingUser = await GET_DB()
+      .collection(USER_COLLECTION_NAME)
+      .findOne({
+        $or: [{ email: validData.email }, { username: validData.username }],
+      });
+
+    if (existingUser) {
+      if (existingUser.email === validData.email) {
+        throw new Error("Email already exists");
+      } else {
+        throw new Error("Username already exists");
+      }
+    }
+
     const createdUser = await GET_DB()
       .collection(USER_COLLECTION_NAME)
       .insertOne(validData);
+
     return createdUser;
   } catch (error) {
     throw new Error(error);
@@ -58,6 +72,7 @@ const findOneById = async (userId) => {
     const result = await GET_DB()
       .collection(USER_COLLECTION_NAME)
       .findOne({ _id: new ObjectId(userId) });
+    delete result.password;
     return result;
   } catch (error) {
     throw new Error(error);
@@ -75,6 +90,52 @@ const findOneByEmail = async (email) => {
   }
 };
 
+const updateAvatar = async (userId, userData) => {
+  try {
+    const updateFields = {
+      username: userData.username,
+      displayName: userData.username,
+      updatedAt: new Date(),
+    };
+
+    if (userData.avatarUrl) {
+      updateFields.avatar = userData.avatarUrl;
+    }
+    const result = await GET_DB()
+      .collection(USER_COLLECTION_NAME)
+      .updateOne(
+        { _id: new ObjectId(userId) },
+        { $set: updateFields },
+        { returnDocument: "after" }
+      );
+    return result;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
+const isActive = async (userId) => {
+  try {
+    const result = await GET_DB()
+      .collection(USER_COLLECTION_NAME)
+      .updateOne({ _id: new ObjectId(userId) }, { $set: { isActive: true } });
+    return result;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
+const UnIsActive = async (userId) => {
+  try {
+    const result = await GET_DB()
+      .collection(USER_COLLECTION_NAME)
+      .updateOne({ _id: new ObjectId(userId) }, { $set: { isActive: false } });
+    return result;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
 export const userModel = {
   USER_COLLECTION_NAME,
   USER_COLLECTION_SCHEMA,
@@ -82,4 +143,7 @@ export const userModel = {
   findOneById,
   findOneByEmail,
   updateVerifyToken,
+  updateAvatar,
+  isActive,
+  UnIsActive,
 };

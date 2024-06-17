@@ -34,6 +34,7 @@ function BoardContent({
   moveCardInTheSameColumn,
   moveCardToDifferentColumn,
   deleteColumnDetails,
+  fetchAndProcessBoardData,
 }) {
   // Yêu cầu chuột di chuyển 10px thì mới kích hoạt event, fix trường hợp click bị gọi event
   const mouseSensor = useSensor(MouseSensor, {
@@ -418,6 +419,7 @@ function BoardContent({
           createNewColumn={createNewColumn}
           createNewCard={createNewCard}
           deleteColumnDetails={deleteColumnDetails}
+          fetchAndProcessBoardData={fetchAndProcessBoardData}
         />
         <DragOverlay dropAnimation={customDropAnimation}>
           {!activeDragItemType && null}

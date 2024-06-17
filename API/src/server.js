@@ -6,10 +6,11 @@ import { CONNECT_DB, CLOSE_DB } from "~/config/mongodb";
 import { env } from "~/config/environment";
 import { APIs_V1 } from "~/routes/v1";
 import { errorHandlingMiddleware } from "~/middlewares/errorHandlingMiddleware";
+import path from "path";
+import socket from "~/sockets/index";
 
 const START_SERVER = () => {
   const app = express();
-
   // Xử lý CORS
   app.use(cors(corsOptions));
 
@@ -22,6 +23,8 @@ const START_SERVER = () => {
   // Middleware xử lý lỗi tập trung
   app.use(errorHandlingMiddleware);
 
+  app.use("/uploads", express.static(path.resolve(process.env.UPLOAD_DIR)));
+
   if (env.BUILD_MODE === "production") {
     app.listen(process.env.PORT, () => {
       console.log(
@@ -30,11 +33,16 @@ const START_SERVER = () => {
     });
   } else {
     // Môi trường Local Dev
-    app.listen(env.LOCAL_DEV_APP_PORT, env.LOCAL_DEV_APP_HOST, () => {
-      console.log(
-        `3. Local DEV: Hi ${env.AUTHOR}, Back-end Server is running successfully at Host: ${env.LOCAL_DEV_APP_HOST} and Port: ${env.LOCAL_DEV_APP_PORT}`
-      );
-    });
+    const server = app.listen(
+      env.LOCAL_DEV_APP_PORT,
+      env.LOCAL_DEV_APP_HOST,
+      () => {
+        console.log(
+          `3. Local DEV: Hi ${env.AUTHOR}, Back-end Server is running successfully at Host: ${env.LOCAL_DEV_APP_HOST} and Port: ${env.LOCAL_DEV_APP_PORT}`
+        );
+      }
+    );
+    socket(server);
   }
   exitHook(() => {
     console.log("4. Server is shutting down...");

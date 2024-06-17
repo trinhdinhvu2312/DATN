@@ -4,6 +4,9 @@ import createWebStorage from "redux-persist/lib/storage/createWebStorage";
 import authReducer from "./authReducer";
 import messageReducer from "./messageReducer";
 import boardReducer from "./boardReducer";
+import inviteReducer from "./inviteReducer";
+import socketReducer from "./socketReducer";
+import reminderReducer from "./reminderReducer";
 
 const createNoopStorage = () => ({
   getItem() {
@@ -33,6 +36,9 @@ const rootReducer = combineReducers({
   auth: authReducer,
   message: messageReducer,
   board: boardReducer,
+  invite: inviteReducer,
+  socket: socketReducer,
+  reminder: reminderReducer,
 });
 
 export { rootReducer, rootPersistConfig };

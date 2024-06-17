@@ -20,7 +20,12 @@ import TextField from "@mui/material/TextField";
 import CloseIcon from "@mui/icons-material/Close";
 import { useConfirm } from "material-ui-confirm";
 
-function Column({ column, createNewCard, deleteColumnDetails }) {
+function Column({
+  column,
+  createNewCard,
+  deleteColumnDetails,
+  fetchAndProcessBoardData,
+}) {
   const {
     attributes,
     listeners,
@@ -43,8 +48,6 @@ function Column({ column, createNewCard, deleteColumnDetails }) {
   const open = Boolean(anchorEl);
   const handleClick = (event) => setAnchorEl(event.currentTarget);
   const handleClose = () => setAnchorEl(null);
-
-  // Cards đã được sắp xếp ở component cha cao nhất (boards/_id.jsx)
   const orderedCards = column.cards;
 
   const [openNewCardForm, setOpenNewCardForm] = useState(false);
@@ -181,7 +184,10 @@ function Column({ column, createNewCard, deleteColumnDetails }) {
         </Box>
 
         {/* List Cards */}
-        <ListCards cards={orderedCards} />
+        <ListCards
+          cards={orderedCards}
+          fetchAndProcessBoardData={fetchAndProcessBoardData}
+        />
 
         {/* Box Column Footer */}
         <Box

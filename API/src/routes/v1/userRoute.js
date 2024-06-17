@@ -1,14 +1,12 @@
 import express from "express";
 import { userController } from "~/controllers/userController";
-import { userValidation } from "~/validations/userValidation";
 
 const Router = express.Router();
 
-Router.route("/register").post(
-  userValidation.register,
-  userController.register
-);
+Router.route("/").get(userController.getUser);
 
-Router.route("/login").post(userValidation.login, userController.login);
+Router.route("/getUserById/:id").get(userController.getUserById);
+
+Router.route("/getUseByMail").post(userController.getUserWithMail);
 
 export const userRoute = Router;

@@ -5,6 +5,17 @@ export const BOARD_TYPES = {
   PRIVATE: "private",
 };
 
+export const REMINDER_TYPES = {
+  PUBLIC: "public",
+  PRIVATE: "private",
+};
+
+export const INVITE_STATUS = {
+  PENDING: "pending",
+  ACCEPTED: "accepted",
+  REJECTED: "rejected",
+};
+
 export const USER_ROLE = {
   MEMBER: "member",
   OWNER: "owner",

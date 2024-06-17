@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import ModeSelect from "~/components/ModeSelect/ModeSelect";
 import AppsIcon from "@mui/icons-material/Apps";
@@ -6,14 +6,9 @@ import { ReactComponent as TrelloIcon } from "~/assets/trello.svg";
 import SvgIcon from "@mui/material/SvgIcon";
 import Typography from "@mui/material/Typography";
 import Workspaces from "./Menus/Workspaces";
-import Recent from "./Menus/Recent";
-import Starred from "./Menus/Starred";
-import Templates from "./Menus/Templates";
 import Profiles from "./Menus/Profiles";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
-import Badge from "@mui/material/Badge";
-import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 import Tooltip from "@mui/material/Tooltip";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import LibraryAddIcon from "@mui/icons-material/LibraryAdd";
@@ -28,20 +23,27 @@ import {
   Select,
   Stack,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import BoardServices from "~/apis/BoardServices";
-import { useDispatch } from "react-redux";
-import { createBoard } from "~/redux/actions/boardActions";
+import { useDispatch, useSelector } from "react-redux";
+import { createBoard, setBoard } from "~/redux/actions/boardActions";
+import Link from "../Link";
+import InviteService from "~/apis/InviteServices";
+import NotificationPopover from "./Menus/NotificationsPopover";
+import { setInvite } from "~/redux/actions/inviteActions";
+import UserServices from "~/apis/UserServices";
+import ReminderServices from "~/apis/ReminderServices";
+import { setReminder } from "~/redux/actions/reminderActions";
 
 function AppBar() {
   const dispatch = useDispatch();
+  const invites = useSelector((state) => state.invite.invites);
   const [searchValue, setSearchValue] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [type, setType] = useState("public");
-  const navigate = useNavigate();
+  const [user, setUser] = useState({});
 
   const handleCreateClick = () => {
     setModalOpen(true);
@@ -73,9 +75,11 @@ function AppBar() {
         description,
         type,
       });
+      const boardData = await BoardServices.getAllBoard();
       if (response.status === 201) {
         const boardId = response.data._id;
         dispatch(createBoard(boardId));
+        dispatch(setBoard(boardData));
         setModalOpen(false);
         resetModalCreate;
         toast.success("Create new board successfully");
@@ -84,6 +88,50 @@ function AppBar() {
       toast.error(validationResult.message);
     }
   };
+
+  const getAllReminder = async (dispatch) => {
+    try {
+      const response = await ReminderServices.getAllReminder();
+      if (response?.status === 200) {
+        dispatch(setReminder(response.data));
+      } else {
+        console.error("API error");
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const getAllInvite = async (dispatch) => {
+    try {
+      const response = await InviteService.getAllInvite();
+      if (response?.status === 200) {
+        dispatch(setInvite(response.data));
+      } else {
+        console.error("API error");
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const fetchUserDetail = async () => {
+    try {
+      const response = await UserServices.getUser();
+      if (response?.status === 200) {
+        setUser(response.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    fetchUserDetail();
+  }, []);
+
+  useEffect(() => {
+    getAllInvite(dispatch);
+    getAllReminder(dispatch);
+  }, [dispatch]);
 
   return (
     <Box
@@ -102,26 +150,26 @@ function AppBar() {
     >
       <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
         <AppsIcon sx={{ color: "white" }} />
-        <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-          <SvgIcon
-            component={TrelloIcon}
-            fontSize="small"
-            inheritViewBox
-            sx={{ color: "white" }}
-          />
-          <Typography
-            variant="span"
-            sx={{ fontSize: "1.2rem", fontWeight: "bold", color: "white" }}
-          >
-            Trello
-          </Typography>
-        </Box>
+        <Link href={`/board`}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+            <SvgIcon
+              component={TrelloIcon}
+              fontSize="small"
+              inheritViewBox
+              sx={{ color: "white" }}
+            />
+
+            <Typography
+              variant="span"
+              sx={{ fontSize: "1.2rem", fontWeight: "bold", color: "white" }}
+            >
+              Trello
+            </Typography>
+          </Box>
+        </Link>
 
         <Box sx={{ display: { xs: "none", md: "flex" }, gap: 1 }}>
           <Workspaces />
-          <Recent />
-          <Starred />
-          <Templates />
           <Button
             sx={{
               color: "white",
@@ -180,17 +228,9 @@ function AppBar() {
 
         <ModeSelect />
 
-        <Tooltip title="Notifications">
-          <Badge color="warning" variant="dot" sx={{ cursor: "pointer" }}>
-            <NotificationsNoneIcon sx={{ color: "white" }} />
-          </Badge>
-        </Tooltip>
+        <NotificationPopover getAllReminder={getAllReminder} />
 
-        <Tooltip title="Help">
-          <HelpOutlineIcon sx={{ cursor: "pointer", color: "white" }} />
-        </Tooltip>
-
-        <Profiles />
+        <Profiles user={user} fetchUserDetail={fetchUserDetail} />
       </Box>
 
       <Modal open={modalOpen} onClose={handleCloseModal}>

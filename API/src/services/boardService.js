@@ -7,7 +7,7 @@ import ApiError from "~/utils/ApiError";
 import { StatusCodes } from "http-status-codes";
 import { cloneDeep } from "lodash";
 
-const createNew = async (reqBody) => {
+const createNew = async (reqBody, userId) => {
   try {
     const newBoard = {
       ...reqBody,
@@ -15,13 +15,22 @@ const createNew = async (reqBody) => {
     };
 
     // Gọi tới tầng Model để xử lý lưu bản ghi newBoard vào trong Database
-    const createdBoard = await boardModel.createNew(newBoard);
+    const createdBoard = await boardModel.createNew(newBoard, userId);
 
     // Lấy bản ghi board sau khi gọi
     const getNewBoard = await boardModel.findOneById(createdBoard.insertedId);
 
     // Trả kết quả về, trong Service luôn phải có return
     return getNewBoard;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const getAll = async (userId) => {
+  try {
+    const boards = await boardModel.getAll(userId);
+    return boards;
   } catch (error) {
     throw error;
   }
@@ -86,9 +95,89 @@ const moveCardToDifferentColumn = async (reqBody) => {
   }
 };
 
+const deleteItem = async (boardId, userId) => {
+  try {
+    const targetBoard = await boardModel.findOneById(boardId);
+
+    if (!targetBoard) {
+      throw new ApiError(StatusCodes.NOT_FOUND, "Board not found!");
+    }
+
+    const hasPermission = await boardModel.checkOwnerIds(boardId, userId);
+
+    if (!hasPermission) {
+      throw new ApiError(StatusCodes.FORBIDDEN, "User not permission!");
+    }
+
+    await boardModel.deleteOneById(boardId);
+
+    await cardModel.deleteManyByBoardId(boardId);
+
+    await columnModel.deleteManyByBoardId(boardId);
+
+    return { deleteResult: "Board deleted successfully!" };
+  } catch (error) {
+    throw error;
+  }
+};
+
+const getAllUserInBoard = async (boardId) => {
+  try {
+    const users = await boardModel.getAllUserInBoard(boardId);
+    return users;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const updateContent = async (userId, boardId, data) => {
+  try {
+    const board = await boardModel.findOneById(boardId);
+
+    if (!board) {
+      throw new ApiError(StatusCodes.NOT_FOUND, "Board not found!");
+    }
+
+    const hasPermission = await boardModel.checkOwnerIds(boardId, userId);
+
+    if (!hasPermission) {
+      throw new ApiError(StatusCodes.FORBIDDEN, "User not permission!");
+    }
+    await boardModel.updateContent(boardId, data);
+
+    const updatedBoard = await boardModel.findOneById(boardId);
+    return updatedBoard;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const pullUserToBoard = async (userId, boardId, userIds) => {
+  try {
+    const board = await boardModel.findOneById(boardId);
+    if (!board) {
+      throw new ApiError(StatusCodes.NOT_FOUND, "Board not found!");
+    }
+    const hasPermission = await boardModel.checkOwnerIds(boardId, userId);
+
+    if (!hasPermission) {
+      throw new ApiError(StatusCodes.FORBIDDEN, "User not permission!");
+    }
+    const res = await boardModel.pullManyUserToBoard(boardId, userIds);
+    return res;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const boardService = {
   createNew,
   getDetails,
   update,
   moveCardToDifferentColumn,
+  getAll,
+  deleteItem,
+  getAllUserInBoard,
+  updateContent,
+  pullUserToBoard,
 };

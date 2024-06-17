@@ -1,7 +1,8 @@
-import { CREATE_BOARD } from "../actions/actionTypes";
+import { CREATE_BOARD, SET_BOARD } from "../actions/actionTypes";
 
 const initialState = {
   boardId: null,
+  boards: [],
 };
 
 const boardReducer = (state = initialState, action) => {
@@ -12,6 +13,11 @@ const boardReducer = (state = initialState, action) => {
       return {
         ...state,
         boardId: payload ? payload.boardId : null,
+      };
+    case SET_BOARD:
+      return {
+        ...state,
+        boards: payload,
       };
     default:
       return state;

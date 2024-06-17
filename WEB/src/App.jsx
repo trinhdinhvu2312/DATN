@@ -2,8 +2,9 @@ import Index from "./pages/IndexPage/Index";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Login from "./pages/Auth/LoginPage/Login";
 import Register from "./pages/Auth/RegisterPage/Register";
-import Board from "./pages/Boards/_id";
+import Boards from "./pages/Boards/index";
 import PrivateRoute from "./routes/PrivateRoute";
+import Board from "./pages/Boards/_id";
 
 function App() {
   return (
@@ -13,7 +14,15 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route
-          path="/board"
+          path="/board/*"
+          element={
+            <PrivateRoute>
+              <Boards />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/board/:boardId"
           element={
             <PrivateRoute>
               <Board />

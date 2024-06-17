@@ -1,4 +1,4 @@
-import { deleteApi, postApi, putApi } from "./agent";
+import { deleteApi, postApi, putApi2 } from "./agent";
 
 const ColumnServices = {
   createNewColumnAPI: async (newColumnData) => {
@@ -13,7 +13,7 @@ const ColumnServices = {
 
   updateColumnDetailsAPI: async (columnId, updateData) => {
     try {
-      const result = await putApi(`columns/${columnId}`, updateData);
+      const result = await putApi2(`columns/${columnId}`, updateData);
       return result.data;
     } catch (error) {
       console.log(error);
